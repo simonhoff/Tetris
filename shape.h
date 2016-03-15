@@ -1,10 +1,10 @@
 #pragma once
 
-enum Color = {RED, BLUE, CYAN, YELLOW, GREEN, PURPLE, ORANGE};
+enum Color = {RED, BLUE, CYAN, YELLOW, GREEN, PURPLE, ORANGE, CLEAR};
 enum Direction = {LEFT, RIGHT, DOWN};
 
 typedef struct Field{
-	enum Color col;
+	enum Color clr;
 	bool occupied;
 }Field_t;
 
@@ -13,11 +13,12 @@ class Shape{
 private:
 	int rows;
 	int cols;
-	Field_t* space;
+	Field_t*** space;
 public:
+	Shape(int c, int r);
+	void set(int col, int row, enum Color col, bool occ);
+	~Shape();	
 	void rotate();
-	void move(enum Direction dir);
-
 };
 
 //green shape
