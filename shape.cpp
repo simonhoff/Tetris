@@ -55,6 +55,12 @@ void Shape::rotate(){
 	space = nSpace;
 }
 
+/******************************
+* PlEASE NOTE
+* if performance problems are experienced when a new tetromino spawns,
+* consider removing for loops, and fill in all fields manually to 
+* avoid redundant operations
+*****************************/
 
 //green shape
 LStair::LStair():Shape::Shape(2,3){
@@ -136,9 +142,9 @@ Line::Line():Shape::Shape(){
 		for (int y = 0; y < 3; y++)
 			set(x,y,CLEAR,false);
 	//fill in occupied tiles
-	set(2,2,RED,true);
-	set(2,1,RED,true);
-	set(1,1,RED,true);
-	set(1,0,RED,true);	
+	set(2,2,CYAN,true);
+	set(2,1,CYAN,true);
+	set(1,1,CYAN,true);
+	set(1,0,CYAN,true);	
 }
  
