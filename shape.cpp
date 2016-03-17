@@ -55,6 +55,37 @@ void Shape::rotate(){
 	space = nSpace;
 }
 
+void Shape::setPos(int x, int y){
+	this->x = x;
+	this->y = y;
+}
+
+/****************************************************
+* Returns an integer equal to or greater than zero, 
+* telling how many empty tiles there are above the ground level
+* in the tetromino space in the given column                    
+****************************************************/
+int Shape::emptyHeight(int col){
+	int y = 0;
+	while (!(*(*(space + y) + col))->occupied){
+		y++;
+	}
+	return y;
+}
+
+int getWidth(){
+	return cols;
+}
+
+//Get x- and y postitions, respectively
+int Shape::getPosX(){
+	return x;
+}
+
+int Shape::getPosY(){
+	return y;
+}
+
 /******************************
 * PlEASE NOTE
 * if performance problems are experienced when a new tetromino spawns,

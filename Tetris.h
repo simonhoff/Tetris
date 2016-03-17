@@ -15,7 +15,7 @@ public:
 	void update();
 	void move(enum Direction dir);
 	void rotate();
-	void softDrop();
 	void hardDrop();
+	int height();
 
 };

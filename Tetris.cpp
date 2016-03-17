@@ -34,17 +34,29 @@ void Tetris::update(){
 }
 
 void Tetris::move(enum Direction dir){
-	current->move(dir);
+	current->move();
 }
 
 void Tetris::rotate(){
 	current->rotate();
 }
 
-void Tetris::softDrop(){
+void Tetris::hardDrop(){
 
 }
 
-void Tetris::hardDrop(){
-
+int Tetris::height(){
+	int counter = 0;
+	int position = current->getPosX();
+	int mHeight = 0;
+	for (int indX = position; indX < (position + current->getWidth()); indX++){
+		int h = 0;
+		int y = current->getPosY() + current->emptySpace(indX);
+		while (!(*(*(board + y) + indX))->occupied){
+			h++;
+			y--;
+		}
+		if (h > mHeight) mHeight = h;
+	}
+	return mHeight;
 }

@@ -14,11 +14,18 @@ private:
 	int rows;
 	int cols;
 	Field_t*** space;
+	int x, y;
 public:
 	Shape(int c, int r);
 	void set(int col, int row, enum Color col, bool occ);
 	~Shape();	
 	void rotate();
+	void setPos(int x, int y);
+	int emptyHeight(int col);
+	int getWidth();
+	int getPosX();
+	int getPosY();
+
 };
 
 //green shape
