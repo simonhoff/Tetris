@@ -30,6 +30,10 @@ void set(int col, int row, enum Color tColor, bool occ){
 	(*(*(space + row) + col))->occupied = occ;
 }
 
+Field_t* get(int x, int y){
+	return (*(space + y) + x);
+}
+
 void Shape::rotate(){
 	Tile_t ***nSpace;
 	//set new rows and cols

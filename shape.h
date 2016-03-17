@@ -17,10 +17,12 @@ private:
 	int x, y;
 public:
 	Shape(int c, int r);
+	~Shape();
 	void set(int col, int row, enum Color col, bool occ);
-	~Shape();	
+	Field_t* get(int x, int y);	
 	void rotate();
 	void setPos(int x, int y);
+	void move(Direction dir, int length);
 	int emptyHeight(int col);
 	int getWidth();
 	int getPosX();

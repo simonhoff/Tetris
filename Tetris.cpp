@@ -22,7 +22,15 @@ Tetris::~Tetris(){
 	for (int row = 0; row < rows; row++){
 		delete[] board[i];
 	}
-	delete[]
+	delete[] board;
+}
+
+void Tetris::newTetromino(){
+	delete current;
+	//GENERATOR//
+	/////////////
+	current = next;
+	next = generated;
 }
 
 void Tetris::startGame(){
@@ -42,13 +50,32 @@ void Tetris::rotate(){
 }
 
 void Tetris::hardDrop(){
+	int boardX = current->getPosX();
+	int boardY = current->getPosY();
+	current->setPos(boardX, boardY - height());
 
+	// Copy current into board
+	for (int x = 0; x < current->getWidth; x++){
+		for (int y = 0; y < current->getHeight(); y++){
+			Field_t* temp = current->get(x,y);
+			if (temp->occupied){
+				(*(*(board + boardY + y) + boardX + x))->occupied = temp->occupied;
+				(*(*(board + boardY + y) + boardX + x))->clr = temp->clr;
+			}
+		}
+	}
+	newTetromino();
 }
 
+/*********************************
+* Returns shortest distance before
+* the tetromino will be grounded, 
+* in whole tiles
+*********************************/
 int Tetris::height(){
 	int counter = 0;
 	int position = current->getPosX();
-	int mHeight = 0;
+	int mHeight = ROWS;
 	for (int indX = position; indX < (position + current->getWidth()); indX++){
 		int h = 0;
 		int y = current->getPosY() + current->emptySpace(indX);
@@ -56,7 +83,7 @@ int Tetris::height(){
 			h++;
 			y--;
 		}
-		if (h > mHeight) mHeight = h;
+		if (h < mHeight) mHeight = h;
 	}
 	return mHeight;
 }

@@ -11,7 +11,9 @@ private:
 	Shape* next;
 public:
 	Tetris();
+	~Tetris();
 	void startGame();
+	void newTetromino();
 	void update();
 	void move(enum Direction dir);
 	void rotate();
