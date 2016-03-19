@@ -77,6 +77,10 @@ int Shape::emptyHeight(int col){
 	return y;
 }
 
+int getHeight(){
+	return rows;
+}
+
 int getWidth(){
 	return cols;
 }
@@ -171,15 +175,11 @@ RBend::RBend():Shape::Shape(2,3){
 }
 
 //cyan shape
-Line::Line():Shape::Shape(){
-	//initialize array empty
-	for (int x = 0; x < 3; x++)
-		for (int y = 0; y < 3; y++)
-			set(x,y,CLEAR,false);
+Line::Line():Shape::Shape(1,4){
 	//fill in occupied tiles
-	set(2,2,CYAN,true);
-	set(2,1,CYAN,true);
-	set(1,1,CYAN,true);
-	set(1,0,CYAN,true);	
+	set(0,0,CYAN,true);
+	set(0,1,CYAN,true);
+	set(0,2,CYAN,true);
+	set(0,3,CYAN,true);	
 }
  

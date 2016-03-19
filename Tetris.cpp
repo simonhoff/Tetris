@@ -25,37 +25,131 @@ Tetris::~Tetris(){
 	delete[] board;
 }
 
-void Tetris::newTetromino(){
-	delete current;
-	//GENERATOR//
-	/////////////
-	current = next;
-	next = generated;
+void Tetris::startGame(){
+	generateQueue();
+	current = *(position++);
+	next = *(position++);
+
 }
 
-void Tetris::startGame(){
+void Tetris::newTetromino(){
+	delete current;
+	current = next;
+	current->place();
+	//this may not work properly
+	if (position == queue.end()) generateQueue();
+	next = *(position++);
+}
 
+void Tetris::generateQueue(){
+	Shape* I = new Line;
+	Shape* J = new LBend;
+	Shape* L = new RBend;
+	Shape* S = new LStair;
+	Shape* Z = new RStair;
+	Shape* T = new MStair;
+	Shape* O = new Square;
+	std::vector<Shape*> bag = {I, J, L, S, Z, T, O};
+	auto bagPos = bag.begin();
+	auto queuePos = queue.begin();
+	//pick randomized element from bag, and insert into queue
+	for (int i = 0; i < 7; i++){
+		int rPos = rand() % (7-i);
+		*(queuePos++) = *(bagPos + i);
+		bag.erase(bagPos + i),
+	} 
+	position = queue.begin();
 }
 
 void Tetris::update(){
+	if (height()){
+		move(DOWN);
+	}else{
+		int boardX = current->getPosX();
+		int boardY = current->getPosY();
 
+		for (int x = 0; x < current->getWidth(); x++){
+			for (int y = 0; y < current->getHeight(); y++){
+				Field_t* temp = current->get(x,y);
+				if (temp->occupied){
+					(*(*(board + boardY + y) + BoardX + x))->occupied = temp->occupied;
+					(*(*(board + boardY + y) + BoardX + x))->clr = temp->clr;
+				}
+			}
+		}
+		//check for filled rows and remove
+		int removeQueue[4] = {-1, -1, -1, -1};
+		int index = 0;
+		for (int y = 0; y < ROWS; y++){
+			if (isRowFull(y)){
+				removeQueue[index] = y;
+				index++;
+			}
+		}
+		removeRows(removeQueue);
+		newTetromino();
+	}
+}
+
+bool isRowFull(int y){
+	for (int x = 0; x < COLS; x++ ){
+		if (!(*(*(board + y) + x))->occupied)
+			return false;
+	}
+	return true;
+}
+
+void removeRows(int rowsA[]){
+	int startIndex = 3;
+	//eliminate non-filled part of array
+	while (rowsA[startIndex] == -1) startIndex--;
+
+	int rowsRemoved = 0;
+	for (int y = 0; y < ROWS; y++){
+		if (startIndex <= 0){
+			if (y == rowsA[startIndex]) {
+				rowsRemoved++;
+				startIndex--;
+			}
+		}
+		if (y + rowsRemoved < ROWS){
+			for (int x = 0; x < COLS; x++ ){
+				*(*(board + y) + x) = *(*(board + y + rowsRemoved) + x);
+			}
+		}else{
+			for (int x = 0; x < COLS; x++ ){
+				(*(*(board + y) + x))->clr = CLEAR;
+				(*(*(board + y) + x))->occupied = false;
+			}
+		} 
+	}
 }
 
 void Tetris::move(enum Direction dir){
-	current->move();
+	if (dir == DOWN && height()){
+		current->move(DOWN);
+	}else if (dir == LEFT){
+		bool occ = false;
+		for (int y = current->getPosY(); y < current->getPosy() + current->getHeight(); y++){
+			if (isOccupied(x,y)) occ = true;
+		}
+		if (!occ) current->move(LEFT);
+	}
 }
 
 void Tetris::rotate(){
 	current->rotate();
+	if (current->getPosX() + current->getWidth > COLS){
+		int offset = current->getPosX + current->getWidth() - COLS; 
 }
 
 void Tetris::hardDrop(){
 	int boardX = current->getPosX();
-	int boardY = current->getPosY();
-	current->setPos(boardX, boardY - height());
+	int boardY = current->getPosY() - height();
+	current->setPos(boardX, boardY);
 
 	// Copy current into board
-	for (int x = 0; x < current->getWidth; x++){
+	for (int x = 0; x < current->getWidth(); x++){
 		for (int y = 0; y < current->getHeight(); y++){
 			Field_t* temp = current->get(x,y);
 			if (temp->occupied){
@@ -68,9 +162,9 @@ void Tetris::hardDrop(){
 }
 
 /*********************************
-* Returns shortest distance before
+* Returns the distance before
 * the tetromino will be grounded, 
-* in whole tiles
+* in whole fields
 *********************************/
 int Tetris::height(){
 	int counter = 0;
@@ -86,4 +180,10 @@ int Tetris::height(){
 		if (h < mHeight) mHeight = h;
 	}
 	return mHeight;
+}
+
+bool isOccupied(int x, int y){
+	if (x > -1 && x < COLS && y > -1 && y < ROWS){
+		return (*(*(board + y) + x))->occupied;
+	}else return true;
 }

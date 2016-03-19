@@ -25,6 +25,7 @@ public:
 	void move(Direction dir, int length);
 	int emptyHeight(int col);
 	int getWidth();
+	int getHeight();
 	int getPosX();
 	int getPosY();
 
