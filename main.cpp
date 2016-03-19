@@ -1,13 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
-#include <new>case sf::Keyboard::
+#include <new>
 #include "Tetris.h"
-#include "shape.h"case sf::Keyboard::
+#include "shape.h"
+enum Color = {RED, BLUE, CYAN, YELLOW, GREEN, PURPLE, ORANGE, CLEAR};
 
 
-
-int main(){case sf::Keyboard::case sf::Keyboard::
+int main(){
 	srand(time(NULL));
 	int rows = 20;
 	int cols = 10;case sf::Keyboard::
@@ -16,6 +16,22 @@ int main(){case sf::Keyboard::case sf::Keyboard::
 
 	sf::RenderWindow window(sf::Videomode(WIDTH,HEIGHT), "Tetris");
 
+	//set up colors
+	const sf::Color boardColor = sf::Color{0xCC,0xCC,0xCC};
+
+	const sf::Color colormap[] = {
+		sf::Color::Red,
+		sf::Color::Blue,
+		sf::Color(0x00,0xAA,0xCC),
+		sf::Color(0xCC,0xDD,0x00),
+		sf::Color::Green,
+		sf::Color(0xBB,0x00,0xCC),
+		sf::Color(0xBB,0xEE,0x00),
+		boardColor
+	}
+
+
+	//allocate and set up game
 	Tetris* game = new Tetris;
 
 while (window.isOpen()) {
@@ -28,16 +44,16 @@ while (window.isOpen()) {
             case sf::Event::KeyPressed:
                 switch(event.key.code) {
                 case sf::Keyboard::Left:
-                	current->move(LEFT);
+                	game->move(LEFT);
                 	break;
                 case sf::Keyboard::Right:
-                	current->move(RIGHT);
+                	game->move(RIGHT);
                 	break;
                 case sf::Keyboard::Down:
-                	current->move(DOWN);
+                	game->move(DOWN);
                 	break;
-                case sf::Keyboard::
-
+                case sf::Keyboard::Up:
+                	game->rotate
                 	break;
                 case sf::Keyboard::Shift:
                     //add hold functionality
@@ -52,6 +68,7 @@ while (window.isOpen()) {
             }
         }
 
+        game->update();
         window.clear();
 
 
