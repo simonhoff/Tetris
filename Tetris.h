@@ -4,7 +4,7 @@
 
 class Tetris{
 private:
-	Field_t **board;
+	Field_t ***board;
 	int rows;
 	int cols;
 	Shape* current;

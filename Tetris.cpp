@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <new>
-#include "tetris.h"
+#include <vector>
+#include "Tetris.h"
 #include "shape.h"
 
 #define ROWS 20
@@ -14,13 +15,19 @@ Tetris::Tetris(){
 	cols = COLS;
 	board = new Field_t*[rows];
 	for (int row = 0; row < rows; row++ ){
-		board[row] = new Field_t[cols]; 
+		board[row] = new Field_t*[cols];
+		for (int col = 0; col < cols; col++){
+			(board[row])[col] = new Field_t;
+		} 
 	}
 }
 
 Tetris::~Tetris(){
 	for (int row = 0; row < rows; row++){
-		delete[] board[i];
+		for (int col = 0; col < cols; col++){
+			delete (board[row])[col];
+		}
+		delete[] board[row];
 	}
 	delete[] board;
 }
@@ -91,7 +98,7 @@ void Tetris::update(){
 	}
 }
 
-bool isRowFull(int y){
+bool Tetris::isRowFull(int y){
 	for (int x = 0; x < COLS; x++ ){
 		if (!(*(*(board + y) + x))->occupied)
 			return false;
@@ -99,7 +106,7 @@ bool isRowFull(int y){
 	return true;
 }
 
-void removeRows(int rowsA[]){
+void Tetris::removeRows(int rowsA[]){
 	int startIndex = 3;
 	//eliminate non-filled part of array
 	while (rowsA[startIndex] == -1) startIndex--;
@@ -127,20 +134,23 @@ void removeRows(int rowsA[]){
 
 void Tetris::move(enum Direction dir){
 	if (dir == DOWN && height()){
-		current->move(DOWN);
+		current->move(DOWN,1);
 	}else if (dir == LEFT){
 		bool occ = false;
-		for (int y = current->getPosY(); y < current->getPosy() + current->getHeight(); y++){
-			if (isOccupied(x,y)) occ = true;
+		for (int y = current->getPosY(); y < current->getPosY() + current->getHeight(); y++){
+			if (isOccupied(current->getPosX()-1,y)) occ = true;
 		}
-		if (!occ) current->move(LEFT);
+		if (!occ) current->move(LEFT, 1);
+	}else if (dir == RIGHT){
+
 	}
 }
 
 void Tetris::rotate(){
 	current->rotate();
-	if (current->getPosX() + current->getWidth > COLS){
-		int offset = current->getPosX + current->getWidth() - COLS; 
+	if (current->getPosX() + current->getWidth() > COLS){
+		int offset = current->getPosX() + current->getWidth() - COLS; 
+	}
 }
 
 void Tetris::hardDrop(){
@@ -182,7 +192,7 @@ int Tetris::height(){
 	return mHeight;
 }
 
-bool isOccupied(int x, int y){
+bool Tetris::isOccupied(int x, int y){
 	if (x > -1 && x < COLS && y > -1 && y < ROWS){
 		return (*(*(board + y) + x))->occupied;
 	}else return true;

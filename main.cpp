@@ -4,17 +4,16 @@
 #include <new>
 #include "Tetris.h"
 #include "shape.h"
-enum Color = {RED, BLUE, CYAN, YELLOW, GREEN, PURPLE, ORANGE, CLEAR};
 
 
 int main(){
 	srand(time(NULL));
 	int rows = 20;
-	int cols = 10;case sf::Keyboard::
-	const int WIDTH = 40*rows + 4*40 + 10*40;
-	const int HEIGHT = 40*cols + 3*40;
+	int cols = 10;
+	static const int WIDTH = 40*rows + 4*40 + 10*40;
+	static const int HEIGHT = 40*cols + 3*40;
 
-	sf::RenderWindow window(sf::Videomode(WIDTH,HEIGHT), "Tetris");
+	sf::RenderWindow window(sf::Videomode(WIDTH,HEIGHT), "Tetris", sf::Style::close);
 
 	//set up colors
 	const sf::Color boardColor = sf::Color{0xCC,0xCC,0xCC};
@@ -28,7 +27,7 @@ int main(){
 		sf::Color(0xBB,0x00,0xCC),
 		sf::Color(0xBB,0xEE,0x00),
 		boardColor
-	}
+	};
 
 
 	//allocate and set up game
@@ -37,7 +36,7 @@ int main(){
 while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            switch(event.type) {case sf::Keyboard::
+            switch(event.type){
             case sf::Event::Closed:
                 window.close();
                 break;
@@ -53,7 +52,7 @@ while (window.isOpen()) {
                 	game->move(DOWN);
                 	break;
                 case sf::Keyboard::Up:
-                	game->rotate
+                	game->rotate();
                 	break;
                 case sf::Keyboard::Shift:
                     //add hold functionality
@@ -71,7 +70,7 @@ while (window.isOpen()) {
         game->update();
         window.clear();
 
-
+        /*
         for(int row = 0; row < height; ++row) {
             for(int col = 0; col < width; ++col) {
                 const int tile_x = col * tile_size, tile_y = row * tile_size;
@@ -110,6 +109,7 @@ while (window.isOpen()) {
                 }
             }
         }
+        */
 
         window.display();
     }
