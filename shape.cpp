@@ -1,4 +1,6 @@
 #include <cstdlib>
+#include <iostream>
+#include <string>
 #include <algorithm>
 #include <new>
 #include "shape.h"
@@ -32,6 +34,7 @@ void Shape::set(int col, int row, enum Color tColor, bool occ){
 }
 
 Field_t* Shape::get(int x, int y){
+	if (x >= cols || x < 0 || y < 0 || y >= rows) std::cout << "out of bounds" << std::endl;
 	return *(*(space + y) + x);
 }
 
@@ -65,14 +68,26 @@ void Shape::setPos(int x, int y){
 	this->y = y;
 }
 
+void Shape::move(enum Direction dir, int length){
+	if (dir == LEFT){
+		x -= length;
+	}else if (dir == DOWN){
+		y -= length;
+	}else if (dir == RIGHT){
+		x += length;
+	}
+}
+
 /****************************************************
 * Returns an integer equal to or greater than zero, 
 * telling how many empty tiles there are above the ground level
 * in the tetromino space in the given column                    
 ****************************************************/
+//Looks like it is no longer in use
+////////////////////////////////
 int Shape::emptyHeight(int col){
 	int y = 0;
-	while (!(*(*(space + y) + col))->occupied){
+	while (!(*(*(space + y) + col))->occupied && y < getHeight()){
 		y++;
 	}
 	return y;
@@ -96,11 +111,14 @@ int Shape::getPosY(){
 }
 
 int Shape::emptySpace(int indX){
-	int count = 0;
-	for (int itr = 0; itr < rows; itr++){
-		if (!(*(*(space + itr) + indX))->occupied) count++;
-		else return count;
+	int y = 0;
+	if (indX >= getWidth()){
+		std::cout << "Clickickickick" << std::endl;
 	}
+	while (!(*(*(space + y) + indX))->occupied && y < getHeight()){
+		y++;
+	}
+	return y;
 }
 
 /******************************
@@ -124,7 +142,7 @@ LStair::LStair():Shape(2,3){
 }
 
 void LStair::place(){
-
+	setPos(4,20);
 }
 
 //red shape
@@ -134,14 +152,14 @@ RStair::RStair():Shape(2,3){
 		for (int y = 0; y < 3; y++)
 			set(x,y,CLEAR,false);
 	//fill in occupied tiles
-	Shape::set(2,2,RED,true);
-	Shape::set(2,1,RED,true);
+	Shape::set(1,2,RED,true);
 	Shape::set(1,1,RED,true);
-	Shape::set(1,0,RED,true);	
+	Shape::set(0,1,RED,true);
+	Shape::set(0,0,RED,true);	
 }
 
 void RStair::place(){
-
+	setPos(4,20);
 }
 
 //purple shape
@@ -158,25 +176,25 @@ MStair::MStair():Shape(3,2){
 }
 
 void MStair::place(){
-
+	setPos(4,20);
 }
 
 //yellow shape
 Square::Square():Shape(2,2){
 	//initialize array filled with yellow
-	for (int x = 0; x < 3; x++)
-		for (int y = 0; y < 3; y++)
+	for (int x = 0; x < 2; x++)
+		for (int y = 0; y < 2; y++)
 			Shape::set(x,y,YELLOW,true);
 }
 
-void Square::Place(){
-
+void Square::place(){
+	setPos(4,20);
 }
 
 //blue shape
 LBend::LBend():Shape(2,3){
 	//initialize array empty
-	for (int x = 0; x < 3; x++)
+	for (int x = 0; x < 2; x++)
 		for (int y = 0; y < 3; y++)
 			set(x,y,CLEAR,false);
 	//fill in occupied tiles
@@ -187,13 +205,13 @@ LBend::LBend():Shape(2,3){
 }
 
 void LBend::place(){
-
+	setPos(4,20);
 }
 
 //orange shape 
 RBend::RBend():Shape(2,3){
 	//initialize array empty
-	for (int x = 0; x < 3; x++)
+	for (int x = 0; x < 2; x++)
 		for (int y = 0; y < 3; y++)
 			set(x,y,CLEAR,false);
 	//fill in occupied tiles
@@ -204,7 +222,7 @@ RBend::RBend():Shape(2,3){
 }
 
 void RBend::place(){
-
+	setPos(4,20);
 }
 
 //cyan shape
@@ -217,6 +235,6 @@ Line::Line():Shape(1,4){
 }
 
 void Line::place(){
-
+	setPos(4,20);
 }
  

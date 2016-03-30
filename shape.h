@@ -1,6 +1,6 @@
 #pragma once
 
-enum Color {RED, BLUE, CYAN, YELLOW, GREEN, PURPLE, ORANGE, CLEAR};
+enum Color {RED = 0, BLUE = 1, CYAN = 2, YELLOW = 3, GREEN = 4, PURPLE = 5, ORANGE = 6, CLEAR = 7};
 enum Direction {LEFT, RIGHT, DOWN};
 
 typedef struct Field{

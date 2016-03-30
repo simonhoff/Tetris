@@ -25,4 +25,5 @@ public:
 	void hardDrop();
 	int height();
 	bool isOccupied(int x, int y);
+	Field_t* get(int x, int y);
 };

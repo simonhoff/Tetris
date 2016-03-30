@@ -1,23 +1,24 @@
 #include <cstdlib>
+#include <iostream>
+#include <string>
 #include <new>
 #include <vector>
 #include "Tetris.h"
 #include "shape.h"
 
-#define ROWS 20
+#define ROWS 24
 #define COLS 10
-
-using namespace std;
-
 
 Tetris::Tetris(){
 	rows = ROWS;
 	cols = COLS;
-	board = new Field_t*[rows];
+	board = new Field_t**[rows];
 	for (int row = 0; row < rows; row++ ){
 		board[row] = new Field_t*[cols];
 		for (int col = 0; col < cols; col++){
 			(board[row])[col] = new Field_t;
+			((board[row])[col])->clr = CLEAR;
+			((board[row])[col])->occupied = false;
 		} 
 	}
 }
@@ -35,6 +36,7 @@ Tetris::~Tetris(){
 void Tetris::startGame(){
 	generateQueue();
 	current = *(position++);
+	current->place();
 	next = *(position++);
 
 }
@@ -58,29 +60,32 @@ void Tetris::generateQueue(){
 	Shape* O = new Square;
 	std::vector<Shape*> bag = {I, J, L, S, Z, T, O};
 	auto bagPos = bag.begin();
-	auto queuePos = queue.begin();
 	//pick randomized element from bag, and insert into queue
 	for (int i = 0; i < 7; i++){
 		int rPos = rand() % (7-i);
-		*(queuePos++) = *(bagPos + i);
-		bag.erase(bagPos + i),
+		queue.push_back( *(bagPos + rPos) );
+		bag.erase(bagPos + rPos);
 	} 
 	position = queue.begin();
 }
 
 void Tetris::update(){
-	if (height()){
+	if (height() > 0){
 		move(DOWN);
 	}else{
+		std::cout << "Placing tetromino" << std::endl;
 		int boardX = current->getPosX();
 		int boardY = current->getPosY();
-
+		//Place tetromino
 		for (int x = 0; x < current->getWidth(); x++){
 			for (int y = 0; y < current->getHeight(); y++){
 				Field_t* temp = current->get(x,y);
+				std::cout << "tempclr " << temp->clr << std::endl;
 				if (temp->occupied){
-					(*(*(board + boardY + y) + BoardX + x))->occupied = temp->occupied;
-					(*(*(board + boardY + y) + BoardX + x))->clr = temp->clr;
+					(*(*(board + boardY + y) + boardX + x))->occupied = true;
+					enum Color tmp = temp->clr;
+					std::cout << "tmpclr " << tmp << std::endl;
+					(*(*(board + boardY + y) + boardX + x))->clr = temp->clr;
 				}
 			}
 		}
@@ -100,7 +105,7 @@ void Tetris::update(){
 
 bool Tetris::isRowFull(int y){
 	for (int x = 0; x < COLS; x++ ){
-		if (!(*(*(board + y) + x))->occupied)
+		if (!isOccupied(x,y))
 			return false;
 	}
 	return true;
@@ -133,6 +138,7 @@ void Tetris::removeRows(int rowsA[]){
 }
 
 void Tetris::move(enum Direction dir){
+	//need to add consideration for empty fields inside shape space
 	if (dir == DOWN && height()){
 		current->move(DOWN,1);
 	}else if (dir == LEFT){
@@ -142,14 +148,19 @@ void Tetris::move(enum Direction dir){
 		}
 		if (!occ) current->move(LEFT, 1);
 	}else if (dir == RIGHT){
-
+		bool occ = false;
+		for (int y = current->getPosY(); y < current->getPosY() + current->getHeight(); y++){
+			if (isOccupied(current->getPosX() + current->getWidth() + 1, y)) occ = true;
+		}
+		if (!occ) current->move(RIGHT, 1);
 	}
 }
 
 void Tetris::rotate(){
 	current->rotate();
 	if (current->getPosX() + current->getWidth() > COLS){
-		int offset = current->getPosX() + current->getWidth() - COLS; 
+		int offset = current->getPosX() + current->getWidth() - COLS;
+		current->setPos(current->getPosX(), current->getPosY() - offset);
 	}
 }
 
@@ -178,17 +189,23 @@ void Tetris::hardDrop(){
 *********************************/
 int Tetris::height(){
 	int counter = 0;
-	int position = current->getPosX();
+	int pos = current->getPosX();
 	int mHeight = ROWS;
-	for (int indX = position; indX < (position + current->getWidth()); indX++){
+	std::cout << "PosX = " << current->getPosX() << std::endl;
+	std::cout << "PosY = " << current->getPosY() << std::endl;
+	std::cout << "Width = " << current->getWidth() << std::endl;
+	if (current->getWidth() + pos >= COLS) std::cout << "height click" << std::endl;
+	for (int indX = pos; indX < (pos + current->getWidth()); indX++){
 		int h = 0;
-		int y = current->getPosY() + current->emptySpace(indX);
-		while (!(*(*(board + y) + indX))->occupied){
+		int y = current->getPosY() + current->emptySpace(indX - pos);
+		while (!isOccupied(indX, y) && y > 0){
 			h++;
 			y--;
 		}
+		std::cout << "for Y = " << current->getPosY() << " temp h is " << h << std::endl;
 		if (h < mHeight) mHeight = h;
 	}
+	std::cout << "for Y = " << current->getPosY() << " output h is " << mHeight << std::endl;
 	return mHeight;
 }
 
@@ -197,3 +214,18 @@ bool Tetris::isOccupied(int x, int y){
 		return (*(*(board + y) + x))->occupied;
 	}else return true;
 }
+
+Field_t* Tetris::get(int x, int y){
+	if (x >= current->getPosX() && x < current->getPosX() + current->getWidth() && y > current->getPosY() && y < current->getPosY() + current->getHeight()){
+		Field_t* temp = current->get(x - current->getPosX(), y - current->getPosY());
+		if (temp->occupied){
+			std::cout << "returning temp, x = " << x << " y = " << y << std::endl;
+			return temp;
+		}
+	}
+	else{
+		std::cout << "returning board x = " << x << " y = " << y << std::endl;
+		return *(*(board + y) + x);
+	}
+}
+
