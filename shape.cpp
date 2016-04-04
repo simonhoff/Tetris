@@ -35,6 +35,8 @@ void Shape::set(int col, int row, enum Color tColor, bool occ){
 
 Field_t* Shape::get(int x, int y){
 	if (x >= cols || x < 0 || y < 0 || y >= rows) std::cout << "out of bounds" << std::endl;
+	if (*(*(space + y) + x) == nullptr) std::cout << "invalid field" << std::endl;
+	std::cout << "clr = " << (*(*(space + y) + x))->clr << std::endl;
 	return *(*(space + y) + x);
 }
 

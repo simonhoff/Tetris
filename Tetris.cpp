@@ -23,6 +23,17 @@ Tetris::Tetris(){
 	}
 }
 
+void Tetris::checkBoard(){
+	for (int y = 0; y < rows; y++){
+		for (int x = 0; x < cols; x++){
+			if (!((*(*(board + y) + x))->clr == CLEAR))
+				std::cout << "clr fault at x = " << x << " y = " << y << std::endl;
+			if ((*(*(board + y) + x))->occupied)
+				std::cout << "occ fault at x = " << x << " y = " << y << std::endl;
+		}
+	}
+}
+
 Tetris::~Tetris(){
 	for (int row = 0; row < rows; row++){
 		for (int col = 0; col < cols; col++){
@@ -43,6 +54,7 @@ void Tetris::startGame(){
 
 void Tetris::newTetromino(){
 	delete current;
+	current = nullptr;
 	current = next;
 	current->place();
 	//this may not work properly
@@ -79,17 +91,22 @@ void Tetris::update(){
 		//Place tetromino
 		for (int x = 0; x < current->getWidth(); x++){
 			for (int y = 0; y < current->getHeight(); y++){
-				Field_t* temp = current->get(x,y);
+				Field_t* temp = this->get(x,y);
 				std::cout << "tempclr " << temp->clr << std::endl;
+				//(*(*(board + boardY + y) + boardX + x))->occupied = temp->occupied;
+				//(*(*(board + boardY + y) + boardX + x))->clr = temp->clr;
+				
 				if (temp->occupied){
 					(*(*(board + boardY + y) + boardX + x))->occupied = true;
 					enum Color tmp = temp->clr;
 					std::cout << "tmpclr " << tmp << std::endl;
 					(*(*(board + boardY + y) + boardX + x))->clr = temp->clr;
 				}
+				
 			}
 		}
 		//check for filled rows and remove
+		/*
 		int removeQueue[4] = {-1, -1, -1, -1};
 		int index = 0;
 		for (int y = 0; y < ROWS; y++){
@@ -99,6 +116,7 @@ void Tetris::update(){
 			}
 		}
 		removeRows(removeQueue);
+		*/
 		newTetromino();
 	}
 }
@@ -216,15 +234,17 @@ bool Tetris::isOccupied(int x, int y){
 }
 
 Field_t* Tetris::get(int x, int y){
-	if (x >= current->getPosX() && x < current->getPosX() + current->getWidth() && y > current->getPosY() && y < current->getPosY() + current->getHeight()){
+	if (x >= current->getPosX() && x < current->getPosX() + current->getWidth() && 
+		y >= current->getPosY() && y < current->getPosY() + current->getHeight())
+	{
 		Field_t* temp = current->get(x - current->getPosX(), y - current->getPosY());
 		if (temp->occupied){
-			std::cout << "returning temp, x = " << x << " y = " << y << std::endl;
+			//std::cout << "returning temp, x = " << x << " y = " << y << std::endl;
 			return temp;
 		}
 	}
 	else{
-		std::cout << "returning board x = " << x << " y = " << y << std::endl;
+		//std::cout << "returning board x = " << x << " y = " << y << std::endl;
 		return *(*(board + y) + x);
 	}
 }

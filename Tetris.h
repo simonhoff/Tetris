@@ -14,6 +14,7 @@ private:
 public:
 	Tetris();
 	~Tetris();
+	void checkBoard();
 	void startGame();
 	void newTetromino();
 	void generateQueue();

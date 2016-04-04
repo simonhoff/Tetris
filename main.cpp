@@ -21,7 +21,7 @@ const sf::Color colormap[8] = {
 
 const sf::Time updateTime = sf::milliseconds(500);
 const sf::Time keyTime = sf::milliseconds(100);
-const sf::Time frame = sf::milliseconds(100);
+const sf::Time frame = sf::milliseconds(10);
 
 int main(){
 	srand(time(NULL));
@@ -36,15 +36,20 @@ int main(){
 
 	sf::RenderWindow window(sf::VideoMode(WIDTH,HEIGHT), "Tetris", sf::Style::Close);
 	//allocate and set up game
-	Tetris* game = new Tetris;
-	game->startGame();
+	Tetris game;
+	game.startGame();
+
+	game.checkBoard();
 
 	sf::Clock playTimer;
 	sf::Clock inputTimer;
+	sf::Clock frameTimer;
 
 	while (window.isOpen()) {
 		sf::Time elapsedPlay = playTimer.getElapsedTime();
 		sf::Time elapsedInput = inputTimer.getElapsedTime();
+		sf::Time elapsedFrame = frameTimer.getElapsedTime();
+
     	if(elapsedInput > keyTime){
     		inputTimer.restart();
 
@@ -57,23 +62,23 @@ int main(){
             	case sf::Event::KeyPressed:
                 switch(event.key.code) {
         	        case sf::Keyboard::Left:
-    	            	game->move(LEFT);
+    	            	game.move(LEFT);
         	        	break;
 	                case sf::Keyboard::Right:
-                		game->move(RIGHT);
+                		game.move(RIGHT);
             	    	break;
         	        case sf::Keyboard::Down:
-    	            	game->move(DOWN);
+    	            	game.move(DOWN);
                 		break;
                 	case sf::Keyboard::Up:
-                		game->rotate();
+                		game.rotate();
                 		break;
                 	case sf::Keyboard::LShift:
                     	//add hold functionality
                     	break;
                 	case sf::Keyboard::Space:
                 		//hardDrop
-                	    game->hardDrop();
+                	    game.hardDrop();
                     	break;
                 	}
             	    break;
@@ -85,30 +90,30 @@ int main(){
     	if (elapsedPlay > updateTime){
 	        playTimer.restart();
 
-	        game->update();
+	        game.update();
         	window.clear();
         }
 
-        
-    	for(int row = 0; row < rows; row++) {
-	        for(int col = 0; col < cols; col++) {
-    	        const int tile_x = col * field_size, tile_y = row * field_size;
+        if (elapsedFrame > frame){
+        	frameTimer.restart();
+    		for(int row = 0; row < rows; row++) {
+	        	for(int col = 0; col < cols; col++) {
+    	        	const int tile_x = col * field_size, tile_y = row * field_size;
 
-        	    sf::RectangleShape field;
-        	    field.setSize(sf::Vector2f(field_size - border_size, field_size - border_size));
-            	//get tile at current position, and copy color to output field
-	            Field_t* cur = game->get(col,row);
-    	        field.setFillColor(colormap[(int) cur->clr]);
-        	    //set window position of current field
-        	    field.setPosition(tile_x + border_size / 2.0, tile_y + border_size / 2.0);
-        	    window.draw(field);
+    	    	    sf::RectangleShape field;
+	        	    field.setSize(sf::Vector2f(field_size - border_size, field_size - border_size));
+        	    	//get tile at current position, and copy color to output field
+	        	    Field_t* cur = game.get(col,row);
+    	        	field.setFillColor(colormap[(int) cur->clr]);
+    	    	    //set window position of current field
+        		    field.setPosition(tile_x + border_size / 2.0, tile_y + border_size / 2.0);
+        		    window.draw(field);
+            	}
             }
 	    }
 
 	    window.display();
 	}
-
-    delete game;
 
     return 0;
 }
