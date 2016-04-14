@@ -6,7 +6,7 @@
 #include "shape.h"
 
 //set up colors
-const sf::Color boardColor = sf::Color{0xCC,0xCC,0xCC};
+const sf::Color boardColor = sf::Color{0x33,0x33,0x33};
 
 const sf::Color colormap[8] = {
 	sf::Color::Red,
@@ -19,7 +19,7 @@ const sf::Color colormap[8] = {
 	boardColor
 };
 
-const sf::Time updateTime = sf::milliseconds(500);
+const sf::Time updateTime = sf::milliseconds(200);
 const sf::Time keyTime = sf::milliseconds(100);
 const sf::Time frame = sf::milliseconds(10);
 
@@ -34,7 +34,7 @@ int main(){
 	static const int WIDTH = field_size*rows + (rows - 1)* border_size + 4*field_size + 10*field_size;
 	static const int HEIGHT = field_size*cols + (cols - 1)*border_size + 3*field_size;
 
-	sf::RenderWindow window(sf::VideoMode(WIDTH,HEIGHT), "Tetris", sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(HEIGHT,WIDTH), "Tetris", sf::Style::Close);
 	//allocate and set up game
 	Tetris game;
 	game.startGame();
