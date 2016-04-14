@@ -239,12 +239,12 @@ Field_t* Tetris::get(int x, int y){
 	{
 		Field_t* temp = current->get(x - current->getPosX(), y - current->getPosY());
 		if (temp->occupied){
-			//std::cout << "returning temp, x = " << x << " y = " << y << std::endl;
+			std::cout << "returning temp, x = " << x << " y = " << y << std::endl;
 			return temp;
 		}
 	}
 	else{
-		//std::cout << "returning board x = " << x << " y = " << y << std::endl;
+		std::cout << "returning board x = " << x << " y = " << y << std::endl;
 		return *(*(board + y) + x);
 	}
 }
