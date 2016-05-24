@@ -10,7 +10,7 @@ private:
 	Shape* current;
 	Shape* next;
 	std::vector<Shape*> queue;
-	std::vector<Shape*>::iterator position;
+	int position;
 public:
 	Tetris();
 	~Tetris();

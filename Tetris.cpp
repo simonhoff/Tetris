@@ -46,9 +46,9 @@ Tetris::~Tetris(){
 
 void Tetris::startGame(){
 	generateQueue();
-	current = *(position++);
+	current = queue[position++];
 	current->place();
-	next = *(position++);
+	next = queue[position++];
 
 }
 
@@ -57,12 +57,13 @@ void Tetris::newTetromino(){
 	current = nullptr;
 	current = next;
 	current->place();
-	//this may not work properly
-	if (position == queue.end()) generateQueue();
-	next = *(position++);
+	if (position == 7) 
+		generateQueue();
+	next = queue[position++];
 }
 
 void Tetris::generateQueue(){
+	queue.clear();
 	Shape* I = new Line;
 	Shape* J = new LBend;
 	Shape* L = new RBend;
@@ -78,24 +79,23 @@ void Tetris::generateQueue(){
 		queue.push_back( *(bagPos + rPos) );
 		bag.erase(bagPos + rPos);
 	} 
-	position = queue.begin();
+	position = 0;
 }
 
 void Tetris::update(){
 	if (height() > 0){
-		move(DOWN);
+		this->move(DOWN);
 	}else{
 		std::cout << "Placing tetromino" << std::endl;
+		std::cout << "Height = " << height() << std::endl;
 		int boardX = current->getPosX();
 		int boardY = current->getPosY();
+		std::cout << "X = " << boardX << ", Y = " << boardY << std::endl;
 		//Place tetromino
 		for (int x = 0; x < current->getWidth(); x++){
 			for (int y = 0; y < current->getHeight(); y++){
-				Field_t* temp = this->get(x,y);
-				std::cout << "tempclr " << temp->clr << std::endl;
-				//(*(*(board + boardY + y) + boardX + x))->occupied = temp->occupied;
-				//(*(*(board + boardY + y) + boardX + x))->clr = temp->clr;
-				
+				Field_t* temp = current->get(x, y);
+
 				if (temp->occupied){
 					(*(*(board + boardY + y) + boardX + x))->occupied = true;
 					enum Color tmp = temp->clr;
@@ -106,17 +106,20 @@ void Tetris::update(){
 			}
 		}
 		//check for filled rows and remove
-		/*
+		
+		bool doRemove = false;
 		int removeQueue[4] = {-1, -1, -1, -1};
 		int index = 0;
 		for (int y = 0; y < ROWS; y++){
 			if (isRowFull(y)){
+				doRemove = true;
 				removeQueue[index] = y;
 				index++;
 			}
 		}
-		removeRows(removeQueue);
-		*/
+		if (doRemove)
+			removeRows(removeQueue);
+		
 		newTetromino();
 	}
 }
@@ -165,10 +168,11 @@ void Tetris::move(enum Direction dir){
 			if (isOccupied(current->getPosX()-1,y)) occ = true;
 		}
 		if (!occ) current->move(LEFT, 1);
+	//Needs debug
 	}else if (dir == RIGHT){
 		bool occ = false;
 		for (int y = current->getPosY(); y < current->getPosY() + current->getHeight(); y++){
-			if (isOccupied(current->getPosX() + current->getWidth() + 1, y)) occ = true;
+			if (isOccupied(current->getPosX() + current->getWidth(), y)) occ = true;
 		}
 		if (!occ) current->move(RIGHT, 1);
 	}
@@ -209,10 +213,7 @@ int Tetris::height(){
 	int counter = 0;
 	int pos = current->getPosX();
 	int mHeight = ROWS;
-	std::cout << "PosX = " << current->getPosX() << std::endl;
-	std::cout << "PosY = " << current->getPosY() << std::endl;
-	std::cout << "Width = " << current->getWidth() << std::endl;
-	if (current->getWidth() + pos >= COLS) std::cout << "height click" << std::endl;
+	if (current->getWidth() + pos > COLS) std::cout << "height click" << std::endl;
 	for (int indX = pos; indX < (pos + current->getWidth()); indX++){
 		int h = 0;
 		int y = current->getPosY() + current->emptySpace(indX - pos);
@@ -220,10 +221,8 @@ int Tetris::height(){
 			h++;
 			y--;
 		}
-		std::cout << "for Y = " << current->getPosY() << " temp h is " << h << std::endl;
 		if (h < mHeight) mHeight = h;
 	}
-	std::cout << "for Y = " << current->getPosY() << " output h is " << mHeight << std::endl;
 	return mHeight;
 }
 
@@ -239,13 +238,15 @@ Field_t* Tetris::get(int x, int y){
 	{
 		Field_t* temp = current->get(x - current->getPosX(), y - current->getPosY());
 		if (temp->occupied){
-			std::cout << "returning temp, x = " << x << " y = " << y << std::endl;
+			//std::cout << "returning temp, x = " << x << " y = " << y << std::endl;
 			return temp;
+		}else{
+			return (*(*(board + y) + x));
 		}
 	}
 	else{
-		std::cout << "returning board x = " << x << " y = " << y << std::endl;
-		return *(*(board + y) + x);
+		//std::cout << "returning board x = " << x << " y = " << y << std::endl;
+		return (*(*(board + y) + x));
 	}
 }
 

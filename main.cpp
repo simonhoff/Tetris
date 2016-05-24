@@ -11,11 +11,11 @@ const sf::Color boardColor = sf::Color{0x33,0x33,0x33};
 const sf::Color colormap[8] = {
 	sf::Color::Red,
 	sf::Color::Blue,
-	sf::Color(0x00,0xAA,0xCC),
-	sf::Color(0xCC,0xDD,0x00),
+	sf::Color(0x00,0xAA,0xCC), //Cyan
+	sf::Color(0xCC,0xDD,0x00), //Yellow
 	sf::Color::Green,
-	sf::Color(0xBB,0x00,0xCC),
-	sf::Color(0xBB,0xEE,0x00),
+	sf::Color(0xBB,0x00,0xCC), //Purple
+	sf::Color(0xBB,0xFF,0x22), //Orange
 	boardColor
 };
 
@@ -98,7 +98,7 @@ int main(){
         	frameTimer.restart();
     		for(int row = 0; row < rows; row++) {
 	        	for(int col = 0; col < cols; col++) {
-    	        	const int tile_x = col * field_size, tile_y = row * field_size;
+    	        	const int tile_x = col * field_size, tile_y = (rows - row - 1) * field_size;
 
     	    	    sf::RectangleShape field;
 	        	    field.setSize(sf::Vector2f(field_size - border_size, field_size - border_size));

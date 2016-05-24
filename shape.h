@@ -14,7 +14,7 @@ private:
 	int rows;
 	int cols;
 	Field_t*** space;
-	int x, y;
+	int xPos, yPos;
 public:
 	Shape(int c, int r);
 	~Shape();

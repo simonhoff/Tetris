@@ -36,7 +36,7 @@ void Shape::set(int col, int row, enum Color tColor, bool occ){
 Field_t* Shape::get(int x, int y){
 	if (x >= cols || x < 0 || y < 0 || y >= rows) std::cout << "out of bounds" << std::endl;
 	if (*(*(space + y) + x) == nullptr) std::cout << "invalid field" << std::endl;
-	std::cout << "clr = " << (*(*(space + y) + x))->clr << ", occ " << (*(*(space + y) + x))->occupied << std::endl;
+	//std::cout << "clr = " << (*(*(space + y) + x))->clr << ", occ " << (*(*(space + y) + x))->occupied << std::endl;
 	return *(*(space + y) + x);
 }
 
@@ -53,7 +53,8 @@ void Shape::rotate(){
 	//move tile pointers to new rotated positions in new array
 	for (int row = 0; row < rows; row++){
 		for (int col = 0; col < cols; col++){
-			*(*(nSpace + (cols - col)) + row) = *(*(space + row) + col);
+			std::cout << "For r " << row << ", c " << col << std::endl;
+			*(*(nSpace + row) + (cols - col -1)) = *(*(space + col) + row);
 		}
 	}
 	//delete dynamically allocated array in space (but not the tiles, as they have been transferred)
@@ -66,17 +67,17 @@ void Shape::rotate(){
 }
 
 void Shape::setPos(int x, int y){
-	this->x = x;
-	this->y = y;
+	this->xPos = x;
+	this->yPos = y;
 }
 
 void Shape::move(enum Direction dir, int length){
 	if (dir == LEFT){
-		x -= length;
+		xPos -= length;
 	}else if (dir == DOWN){
-		y -= length;
+		yPos -= length;
 	}else if (dir == RIGHT){
-		x += length;
+		xPos += length;
 	}
 }
 
@@ -105,17 +106,17 @@ int Shape::getWidth(){
 
 //Get x- and y postitions, respectively
 int Shape::getPosX(){
-	return x;
+	return xPos;
 }
 
 int Shape::getPosY(){
-	return y;
+	return yPos;
 }
 
 int Shape::emptySpace(int indX){
 	int y = 0;
 	if (indX >= getWidth()){
-		std::cout << "Clickickickick" << std::endl;
+		std::cout << "Shape::emptySpace() bug" << std::endl;
 	}
 	while (!(*(*(space + y) + indX))->occupied && y < getHeight()){
 		y++;
