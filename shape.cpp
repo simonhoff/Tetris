@@ -54,7 +54,7 @@ void Shape::rotate(){
 	for (int row = 0; row < rows; row++){
 		for (int col = 0; col < cols; col++){
 			std::cout << "For r " << row << ", c " << col << std::endl;
-			*(*(nSpace + row) + (cols - col -1)) = *(*(space + col) + row);
+			*(*(nSpace + (rows - row - 1)) + col) = *(*(space + col) + row);
 		}
 	}
 	//delete dynamically allocated array in space (but not the tiles, as they have been transferred)

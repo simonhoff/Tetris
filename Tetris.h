@@ -20,6 +20,7 @@ public:
 	void generateQueue();
 	void update();
 	bool isRowFull(int y);
+	void removeCheck();
 	void removeRows(int rowsA[]);
 	void move(enum Direction dir);
 	void rotate();
@@ -27,4 +28,5 @@ public:
 	int height();
 	bool isOccupied(int x, int y);
 	Field_t* get(int x, int y);
+	bool isGameLost();
 };

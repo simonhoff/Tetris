@@ -15,11 +15,11 @@ const sf::Color colormap[8] = {
 	sf::Color(0xCC,0xDD,0x00), //Yellow
 	sf::Color::Green,
 	sf::Color(0xBB,0x00,0xCC), //Purple
-	sf::Color(0xBB,0xFF,0x22), //Orange
+	sf::Color(0xFF,0xBB,0x00), //Orange
 	boardColor
 };
 
-const sf::Time updateTime = sf::milliseconds(200);
+const sf::Time updateTime = sf::milliseconds(250);
 const sf::Time keyTime = sf::milliseconds(100);
 const sf::Time frame = sf::milliseconds(10);
 
@@ -113,6 +113,8 @@ int main(){
 	    }
 
 	    window.display();
+	    if (game.isGameLost())
+	    	break;
 	}
 
     return 0;
