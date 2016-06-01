@@ -58,8 +58,8 @@ void Shape::rotate(){
 		}
 	}
 	//delete dynamically allocated array in space (but not the tiles, as they have been transferred)
-	for (int row = 0; row < rows; row++){
-		delete[] *(space + row);
+	for (int col = 0; col < cols; col++){
+		delete[] *(space + col);
 	}
 	delete[] space;
 	//set space equal to nSpace pointer before nSpace goes out of scope

@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
+#include <iostream>
 #include <ctime>
 #include <new>
 #include "Tetris.h"
@@ -15,7 +16,7 @@ const sf::Color colormap[8] = {
 	sf::Color(0xCC,0xDD,0x00), //Yellow
 	sf::Color::Green,
 	sf::Color(0xBB,0x00,0xCC), //Purple
-	sf::Color(0xFF,0xBB,0x00), //Orange
+	sf::Color(0xFA,0xAA,0x00), //Orange
 	boardColor
 };
 
@@ -79,6 +80,14 @@ int main(){
                 	case sf::Keyboard::Space:
                 		//hardDrop
                 	    game.hardDrop();
+                    	break;
+                    case sf::Keyboard::P:
+                    	std::cout << "Pause!" << std::endl;
+                    	bool pause = true;
+                    	while (pause){
+                    		if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+                    			pause = false;
+                    	}
                     	break;
                 	}
             	    break;
