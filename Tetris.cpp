@@ -147,13 +147,10 @@ void Tetris::removeRows(int rowsA[]){
 	int index = 0;
 	int rowsRemoved = 0;
 	for (int y = 0; y < ROWS; y++){
-		if (index < 4){
-			//maybe -1 here to correct for offset
-			if (y == rowsA[index]) {
-				rowsRemoved++;
-				index++;
-				std::cout << "Remove++" << std::endl;
-			}
+		while (y + rowsRemoved == rowsA[index] && index < 4) {
+			rowsRemoved++;
+			index++;
+			std::cout << "Remove++" << std::endl;
 		}
 		if (y + rowsRemoved < ROWS){
 			for (int x = 0; x < COLS; x++ ){
